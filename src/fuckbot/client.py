@@ -91,4 +91,4 @@ class FuckbotClient(discord.Client):
     async def on_member_remove(self, member):
         # If someone leaves, make sure we rekt em on the way out
         if member.guild.system_channel:
-            await member.guild.system_channel.send(rekt(member.mention))
+            await member.guild.system_channel.send(rekt(member.display_name))
