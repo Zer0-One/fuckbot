@@ -12,11 +12,13 @@ YTDL_OPTS = [
     '-q',
     '-i',
     '--no-warnings',
-    '-f', 'bestaudio/best',
+#    '-f', 'bestaudio/best',
+    '-f', 'worstaudio/worst',
     '--default-search', 'auto',
     '--restrict-filenames',
 #    '--yes-playlist',
     '--no-check-certificate',
+    '--buffer-size', '16k',
     '-o', '-'
 ]
 
