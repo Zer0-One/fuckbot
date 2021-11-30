@@ -12,8 +12,8 @@ YTDL_OPTS = [
     '-q',
     '-i',
     '--no-warnings',
-#    '-f', 'bestaudio/best',
-    '-f', 'worstaudio/worst',
+    '-f', 'bestaudio/best',
+#    '-f', 'worstaudio/worst',
     '--default-search', 'auto',
     '--restrict-filenames',
 #    '--yes-playlist',
@@ -51,18 +51,17 @@ async def waitpids():
 
 # Handle queue progress as tracks finish playing
 def waitqueues(guild):
-    while True:
-        # If not connected to voice, don't do anything
-        if not guild.voice_client:
-            continue
+    # If not connected to voice, don't do anything
+    if not guild.voice_client:
+        return
 
-        # Otherwise, pop the queue
-        if len(QUEUE[guild.id]) > 0:
-            QUEUE[guild.id].pop(0)
+    # Otherwise, pop the queue
+    if len(QUEUE[guild.id]) > 0:
+        QUEUE[guild.id].pop(0)
 
-        # Start playing the next track, if any
-        if len(QUEUE[guild.id]) > 0:
-            playcont(guild)
+    # Start playing the next track, if any
+    if len(QUEUE[guild.id]) > 0:
+        playcont(guild)
 
 # Determine if a user is qualified to issue a play command
 def can_play(user):
@@ -161,7 +160,7 @@ def pause(user):
     user.guild.voice_client.pause()
 
 # Create audiosource and play track
-def play(user):
+async def play(user):
     qualified, ret = can_play(user)
 
     if not qualified:
@@ -179,9 +178,12 @@ def play(user):
 
         WAITPID.append(p)
 
+        await asyncio.sleep(3)
+
         #source = discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(p.stdout, pipe=True, **FFMPEG_OPTS))
         #source =  discord.FFmpegPCMAudio(p.stdout, pipe=True, **FFMPEG_OPTS)
         source =  discord.FFmpegOpusAudio(p.stdout, pipe=True, **FFMPEG_OPTS)
+        #source = discord.FFmpegOpusAudio.from_probe(p.stdout, **FFMPEG_OPTS)
 
         user.guild.voice_client.play(source, after=lambda error: waitqueues(user.guild))
     except Exception as e:
@@ -221,7 +223,7 @@ def embedqueue(user):
     return embeds
 
 # Stops playback, pops the queue, and plays the next track
-def skip(user):
+async def skip(user):
     qualified, ret = can_play(user)
 
     if not qualified:
@@ -233,7 +235,7 @@ def skip(user):
         QUEUE[user.guild.id].pop(0)
 
     if len(QUEUE[user.guild.id]) > 0:
-        ret = play(user)
+        ret = await play(user)
 
         if ret:
             return ret

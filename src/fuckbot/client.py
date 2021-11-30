@@ -4,6 +4,7 @@ import logging
 import pprint
 
 import fuckbot.audio as audio
+import fuckbot.automod as automod
 import fuckbot.blacklist as blacklist
 import fuckbot.trigger as trigger
 
@@ -13,6 +14,9 @@ from .rekt import rekt
 
 class FuckbotClient(discord.Client):
     async def on_connect(self):
+        # Initialize automod module
+        automod.automod_init()
+
         # Initialize blacklist module
         blacklist.blacklist_init()
 
@@ -27,15 +31,20 @@ class FuckbotClient(discord.Client):
         if not guild.id in audio.QUEUE:
             audio.QUEUE[guild.id] = []
 
-        # Initialize the blacklist map, write to disk
+        # Initialize blacklist map, write to disk
         if not str(guild.id) in blacklist.BLACKLISTS:
             blacklist.BLACKLISTS[str(guild.id)] = []
             blacklist.blacklist_save()
 
-        # Initialize the trigger map, write to disk
+        # Initialize trigger map, write to disk
         if not str(guild.id) in trigger.TRIGGERS:
             trigger.TRIGGERS[str(guild.id)] = []
             trigger.trigger_save()
+
+        # Initialize automod config, write to disk
+        if not str(guild.id) in automod.AUTOMOD_CONF:
+            automod.AUTOMOD_CONF[str(guild.id)] = {}
+            automod.automod_save()
 
     async def on_message(self, message):
         # Don't process messages from yourself

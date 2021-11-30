@@ -25,7 +25,7 @@ def blacklist_init():
             with open(path, 'r') as db:
                 BLACKLISTS = json.load(db)
     except JSONDecodeError as e:
-        logging.error(f"Error while parsing blacklist db: {e}")
+        logging.error(f"JSON error while parsing blacklist db: {e}")
 
         sys.exit(-1)
     except Exception as e:

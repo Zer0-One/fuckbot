@@ -2,6 +2,7 @@ import discord
 import logging
 
 import fuckbot.audio as audio
+import fuckbot.automod as automod
 import fuckbot.blacklist as blacklist
 import fuckbot.interject as interject
 import fuckbot.roll as roll
@@ -40,6 +41,16 @@ async def execute(client, msg):
         await msg.delete()
 
         return (ResponseType.NONE, None)
+
+    if directive == "am-enable":
+        automod.automod_enable(msg)
+
+        return (ResponseType.TEXT, "Automod enabled")
+
+    if directive == "am-disable":
+        automod.automod_disable(msg)
+
+        return (ResponseType.TEXT, "Automod disabled")
 
     if directive == "bl-add":
         if not msg.author.guild_permissions.manage_messages:
@@ -155,7 +166,7 @@ async def execute(client, msg):
             if ret :
                 return (ResponseType.TEXT, ret)
 
-            ret = audio.play(msg.author)
+            ret = await audio.play(msg.author)
 
             if ret:
                 return (ResponseType.TEXT, ret)
@@ -165,7 +176,7 @@ async def execute(client, msg):
             return (ResponseType.NONE, None)
         # No argument given, play from current queue
         else:
-            ret = audio.play(msg.author)
+            ret = await audio.play(msg.author)
 
             if ret:
                 return (ResponseType.TEXT, ret)
@@ -184,7 +195,7 @@ async def execute(client, msg):
         return (ResponseType.TEXT, roll.roll(cmdseq[1]))
 
     if directive == "skip" or directive == "next":
-        ret = audio.skip(msg.author)
+        ret = await audio.skip(msg.author)
 
         if ret:
             return (ResponseType.TEXT, ret)

@@ -8,6 +8,7 @@ class Config:
     __CONFIG_DEFAULT_PATH="/etc/fuckbot/fuckbot.ini"
 
     DEFAULT_CONFIG = {
+        "AUTOMOD_DB": "automod.json",
         "API_KEY_PATH": "/etc/fuckbot/api.key",
         "BLACKLIST_DB": "blacklist.json",
         "DEBUG": False,

@@ -6,6 +6,8 @@ Another fucking Discord robot.
 
 ## Commands
 
+The default command prefix is the tilde character, `~`.
+
 ### Audio Player
 
 - `add` - Adds a track to the queue.
@@ -29,6 +31,16 @@ Another fucking Discord robot.
 - `bl-add` - Adds users to a blacklist which prevents all interaction with the bot.
 - `bl-list` - Lists all blacklisted users.
 - `bl-del` - Removes users from the blacklist.
+
+### Automod
+
+- `am-enable` - Enables automod.
+- `am-disable` - Disables automod.
+- `am-setchannel` - Sets automod info channel. To disable reporting, set to empty.
+- `am-banwords` - Lists all disallowed words.
+- `am-banword-add` - Adds a new banword.
+- `am-banword-del` - Removes a banword.
+- `am-history` - Reports the automod history for the given user.
 
 ### Misc
 

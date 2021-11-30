@@ -40,7 +40,6 @@ def trigger_save():
     with open(config["WORKING_DIR"] + "/" + config["TRIGGER_DB"], 'w') as db:
         json.dump(TRIGGERS, db, indent=4)
     
-
 def trigger_init():
     global TRIGGERS
 
