@@ -185,6 +185,26 @@ async def execute(client, msg):
 
             return (ResponseType.NONE, None)
 
+    if directive == "purge":
+        if not msg.author.guild_permissions.manage_messages:
+            return (ResponseType.TEXT, "You must have manage_messages permissions to use the 'purge' command")
+
+        if len(cmdseq) > 2:
+            return (ResponseType.TEXT, "You can only purge one user at a time (for safety 'n stuff)")
+
+        if len(cmdseq) < 2:
+            return (ResponseType.TEXT, "You need to mention a user to purge")
+
+        if not msg.mentions:
+            return (ResponseType.TEXT, "You need to mention a user to purge")
+
+        name = msg.mentions[0].name
+
+        for channel in msg.guild.text_channels:
+            await channel.purge(limit=None, check=lambda message:message.author.id == msg.mentions[0].id)
+
+        return (ResponseType.TEXT, f"User '{name}' purged")
+
     if directive == "queue":
         return (ResponseType.EMBEDS, audio.embedqueue(msg.author))
 
