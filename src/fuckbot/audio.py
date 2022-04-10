@@ -3,7 +3,7 @@ import discord
 import json
 import logging
 import subprocess
-import youtube_dl
+#import youtube_dl
 
 from .util import pp_time
 

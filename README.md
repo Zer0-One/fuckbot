@@ -70,7 +70,7 @@ Directive                | Default                      | Description
 [fuckbot]                |                              | 
 api\_key\_path           | /etc/fuckbot/api.key         | Path to a file containing the discord API key.
 debug                    | false                        | Enables debug-level logging. *Very* verbose.
-logfile                  | /var/log/runbmc/runbmc.log   | Logfile path.
+logfile                  | /var/log/fuckbot/fuckbot.log | Logfile path.
 syslog                   | false                        | Enables logging to the syslog via the LOG\_DAEMON facility
 
 

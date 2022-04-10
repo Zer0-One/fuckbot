@@ -4,6 +4,7 @@ import logging
 import fuckbot.audio as audio
 import fuckbot.automod as automod
 import fuckbot.blacklist as blacklist
+import fuckbot.help as help
 import fuckbot.interject as interject
 import fuckbot.roll as roll
 import fuckbot.trigger as trigger
@@ -42,15 +43,15 @@ async def execute(client, msg):
 
         return (ResponseType.NONE, None)
 
-    if directive == "am-enable":
-        automod.automod_enable(msg)
-
-        return (ResponseType.TEXT, "Automod enabled")
-
     if directive == "am-disable":
         automod.automod_disable(msg)
 
         return (ResponseType.TEXT, "Automod disabled")
+
+    if directive == "am-enable":
+        automod.automod_enable(msg)
+
+        return (ResponseType.TEXT, "Automod enabled")
 
     if directive == "bl-add":
         if not msg.author.guild_permissions.manage_messages:
@@ -63,14 +64,6 @@ async def execute(client, msg):
 
         if ret:
             return (ResponseType.TEXT, ret)
-
-        return (ResponseType.NONE, None)
-
-    if directive == "bl-list":
-        ret = blacklist.blacklist_list(msg, client)
-
-        if ret:
-            return (ResponseType.TEXT, "```" + ret + "```")
 
         return (ResponseType.NONE, None)
 
@@ -88,6 +81,14 @@ async def execute(client, msg):
 
         return (ResponseType.NONE, None)
 
+    if directive == "bl-list":
+        ret = blacklist.blacklist_list(msg, client)
+
+        if ret:
+            return (ResponseType.TEXT, "```" + ret + "```")
+
+        return (ResponseType.NONE, None)
+
     if directive == "clear":
         ret = audio.clear(msg.author)
 
@@ -98,16 +99,11 @@ async def execute(client, msg):
 
         return (ResponseType.NONE, None)
 
-    if directive == "tr-del":
-        if len(cmdseq) < 2:
-            return (ResponseType.TEXT, "You must specify a trigger index to delete")
+    if directive == "help":
+        if len(cmdseq) < 2 or len(cmdseq) > 2:
+            return (ResponseType.TEXT, help.CMDLIST)
 
-        ret = await trigger.trigger_remove(msg, cmdseq[1])
-
-        if ret:
-            return (ResponseType.TEXT, ret)
-
-        return (ResponseType.TEXT, "Error encountered while attempting to delete trigger")
+        return (ResponseType.TEXT, help.help(cmdseq[1]))
 
     if directive == "interject":
         return (ResponseType.TEXT, interject.INTERJECTION)
@@ -131,14 +127,6 @@ async def execute(client, msg):
         await msg.delete()
 
         return (ResponseType.NONE, None)
-
-    if directive == "tr-list":
-        ret = trigger.trigger_list(msg)
-
-        if ret:
-            return (ResponseType.TEXT, "```" + ret + "```")
-
-        return (ResponseType.TEXT, "Error encountered while attempting to enumerate triggers")
 
     if directive == "pause":
         ret = audio.pause(msg.author)
@@ -268,6 +256,25 @@ async def execute(client, msg):
             return (ResponseType.TEXT, "Error encountered while attempting to add trigger")
 
         return (ResponseType.TEXT, res)
+
+    if directive == "tr-del":
+        if len(cmdseq) < 2:
+            return (ResponseType.TEXT, "You must specify a trigger index to delete")
+
+        ret = await trigger.trigger_remove(msg, cmdseq[1])
+
+        if ret:
+            return (ResponseType.TEXT, ret)
+
+        return (ResponseType.TEXT, "Error encountered while attempting to delete trigger")
+
+    if directive == "tr-list":
+        ret = trigger.trigger_list(msg)
+
+        if ret:
+            return (ResponseType.TEXT, "```" + ret + "```")
+
+        return (ResponseType.TEXT, "Error encountered while attempting to enumerate triggers")
 
     if directive == "version":
         version_text = f"Fuckbot version: {VERSION}\n"
