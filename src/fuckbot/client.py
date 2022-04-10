@@ -26,6 +26,9 @@ class FuckbotClient(discord.Client):
         # Create task to wait on children created by the audio module
         asyncio.create_task(audio.waitpids())
 
+    async def on_guild_join(self, guild):
+        await self.on_guild_available(guild)
+
     async def on_guild_available(self, guild):
         # Initialize the guild's queue for the audio module
         if not guild.id in audio.QUEUE:
