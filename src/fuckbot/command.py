@@ -15,9 +15,10 @@ from .version import AUTHOR, LICENSE_FULL_NAME, URL, VERSION
 
 class ResponseType(Enum):
     TEXT = 1
-    EMBED = 2
-    EMBEDS = 3
-    NONE = 4
+    TEXTS = 2
+    EMBED = 3
+    EMBEDS = 4
+    NONE = 5
 
 def is_command(msg):
     if msg.content.startswith("~") and len(msg.content) > 1:
@@ -272,7 +273,7 @@ async def execute(client, msg):
         ret = trigger.trigger_list(msg)
 
         if ret:
-            return (ResponseType.TEXT, "```" + ret + "```")
+            return (ResponseType.TEXTS, ret)
 
         return (ResponseType.TEXT, "Error encountered while attempting to enumerate triggers")
 

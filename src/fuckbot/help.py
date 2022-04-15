@@ -48,6 +48,7 @@ HELPSYNTAX = {
     'bl-del': "bl-del <index>",
     'bl-list': "bl-list",
 
+    'purge': 'purge <@user>',
     'roll': 'roll <num>d<sides>[+<add>]'
 }
 HELPDESC = {
@@ -65,10 +66,11 @@ HELPDESC = {
     'tr-del': "Removes the trigger at the given index. Use 'tr-list' to index triggers.",
     'tr-list': "Lists all triggers, with indexes in the leftmost column.",
 
-    'bl-add': "Adds one or more users to a bot blacklist which prevents the bot from interacting with them. The arguments must be actual user mentions, not just usernames or IDs.",
+    'bl-add': "Adds one or more users to a bot blacklist which prevents the bot from interacting with them.\n\nThe arguments must be actual user mentions, not just usernames or IDs.",
     'bl-del': "Removes the user at the given index from the blacklist.",
     'bl-list': "Lists all blacklisted users, with indexes in the leftmost column.",
 
+    'purge': "Purges all message history, across all text channels, for the given user. This command will search *all* history, and so may take on the order of hours or days to complete.\n\nThe argument must be a user mention, not just a username or ID.",
     'roll': "Simulates a dice roll. e.g '2d20' or '4d6+4'."
 }
 

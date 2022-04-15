@@ -143,7 +143,7 @@ async def trigger_remove(msg, index):
 
 def trigger_list(msg):
     if len(TRIGGERS[str(msg.guild.id)]) == 0:
-        return "No active triggers"
+        return ["No active triggers"]
 
     trim = [trg.copy() for trg in TRIGGERS[str(msg.guild.id)]]
 
@@ -152,7 +152,18 @@ def trigger_list(msg):
         trg.pop('r_file')
         trg.pop('r_text')
 
-    return tabulate.tabulate(trim, headers=TRIGGER_HEADERS, tablefmt="fancy_grid", showindex="always")
+    # Figure out how many 5-entry chunks we need
+    #chunks = len(TRIGGERS[str(msg.guild.id)]) / 5
+    tables = []
+
+    CHUNK_SIZE = 5
+
+    # Split table into 5-entry chunks
+    for i in range(0, len(trim), CHUNK_SIZE):
+        tables.append("```" + tabulate.tabulate(trim[i:i + CHUNK_SIZE], headers=TRIGGER_HEADERS, tablefmt="fancy_grid", showindex=range(i, min(i + CHUNK_SIZE, len(trim)))) + "```")
+
+    #return tabulate.tabulate(trim, headers=TRIGGER_HEADERS, tablefmt="fancy_grid", showindex="always")
+    return tables
 
 async def trigger(msg):
     try:

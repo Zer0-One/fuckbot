@@ -89,6 +89,9 @@ class FuckbotClient(discord.Client):
                         await message.channel.send(embed=em)
                 elif resp[0] == ResponseType.TEXT:
                     await message.channel.send(resp[1])
+                elif resp[0] == ResponseType.TEXTS:
+                    for msg in resp[1]:
+                        await message.channel.send(msg)
                 else:
                     return
 
