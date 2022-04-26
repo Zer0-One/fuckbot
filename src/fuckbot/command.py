@@ -189,10 +189,12 @@ async def execute(client, msg):
 
         name = msg.mentions[0].name
 
-        for channel in msg.guild.text_channels:
-            await channel.purge(limit=None, check=lambda message:message.author.id == msg.mentions[0].id)
+        await msg.reply("Purging message history for '{name}'")
 
-        return (ResponseType.TEXT, f"User '{name}' purged")
+        for channel in msg.guild.text_channels:
+            deleted = await channel.purge(limit=None, check=lambda message:message.author.id == msg.mentions[0].id)
+
+        return (ResponseType.TEXT, f"Successfully purged {deleted} messages from user '{name}'")
 
     if directive == "queue":
         return (ResponseType.EMBEDS, audio.embedqueue(msg.author))
