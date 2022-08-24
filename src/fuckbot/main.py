@@ -7,7 +7,7 @@ from pprint import pprint
 
 from .client import FuckbotClient
 from .config import Config
-from .db import db_init
+#from .db import db_init
 from .log import log_init
 
 config = Config()
