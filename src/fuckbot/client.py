@@ -6,10 +6,11 @@ import pprint
 import fuckbot.audio as audio
 import fuckbot.automod as automod
 import fuckbot.blacklist as blacklist
+import fuckbot.eightball as eightball
 import fuckbot.trigger as trigger
+import fuckbot.twoweeks as twoweeks
 
 from .command import ResponseType, is_command, execute
-from .eightball import is_question, answer
 from .rekt import rekt
 
 class FuckbotClient(discord.Client):
@@ -72,8 +73,13 @@ class FuckbotClient(discord.Client):
                 else:
                     break
 
-            if is_question(msg_stripped):
-                await message.channel.send(answer())
+            if eightball.is_question(msg_stripped):
+                await message.channel.send(eightball.answer())
+
+                return
+
+            if twoweeks.is_question(msg_stripped):
+                await message.channel.send(twoweeks.answer())
 
                 return
 

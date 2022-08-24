@@ -31,6 +31,6 @@ def is_question(msg):
     return False
 
 def answer():
-    i = random.randint(1, len(ANSWERS) - 1)
+    i = random.randint(0, len(ANSWERS) - 1)
 
     return ANSWERS[i]

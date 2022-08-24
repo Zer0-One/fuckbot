@@ -189,7 +189,7 @@ async def execute(client, msg):
 
         name = msg.mentions[0].name
 
-        await msg.reply("Purging message history for '{name}'")
+        await msg.reply(f"Purging message history for '{name}'")
 
         for channel in msg.guild.text_channels:
             deleted = await channel.purge(limit=None, check=lambda message:message.author.id == msg.mentions[0].id)
