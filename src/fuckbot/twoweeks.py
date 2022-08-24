@@ -7,7 +7,7 @@ ANSWERS = [
 def is_question(msg):
     m = msg.lower()
 
-    if(m.contains("how long until")):
+    if("how long until" in m):
         return True
 
 def answer():
