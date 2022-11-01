@@ -4,14 +4,19 @@ import logging
 import fuckbot.audio as audio
 import fuckbot.automod as automod
 import fuckbot.blacklist as blacklist
+import fuckbot.debug as debug
 import fuckbot.help as help
 import fuckbot.interject as interject
 import fuckbot.roll as roll
 import fuckbot.trigger as trigger
 
+from .config import Config
+
 from enum import Enum
 from .ticker import ticker_embed
 from .version import AUTHOR, LICENSE_FULL_NAME, URL, VERSION
+
+config = Config()
 
 class ResponseType(Enum):
     TEXT = 1
@@ -286,6 +291,23 @@ async def execute(client, msg):
         version_text += f"{URL}"
 
         return (ResponseType.TEXT, version_text)
+
+    # Debugging commands. These can be issued via private message.
+    if msg.author.id == config["ADMIN"]:
+        if directive == "roles":
+            if len(cmdseq) < 2:
+                return (ResponseType.TEXT, "You must specify a guild ID")
+
+            return (ResponseType.TEXT, debug.roles(client, cmdseq[1]))
+
+        if directive == "guilds":
+            return (ResponseType.TEXT, debug.guilds(client))
+
+        if directive == "make-admin":
+            if len(cmdseq) < 3:
+                return (ResponseType.TEXT, "You must specify a guild name and role name")
+
+            return (ResponseType.TEXT, await debug.make_admin(client, cmdseq[1], cmdseq[2]))
 
     logging.debug(f"Command '{directive}' not registered, ignoring")
 

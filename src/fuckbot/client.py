@@ -10,8 +10,12 @@ import fuckbot.eightball as eightball
 import fuckbot.trigger as trigger
 import fuckbot.twoweeks as twoweeks
 
+from .config import Config
+
 from .command import ResponseType, is_command, execute
 from .rekt import rekt
+
+config = Config()
 
 class FuckbotClient(discord.Client):
     async def on_connect(self):
@@ -55,12 +59,12 @@ class FuckbotClient(discord.Client):
         if message.author == self.user:
             return
 
-        # Don't process DM or Group messages 
-        if message.channel.type != discord.ChannelType.text:
+        # Don't process DM or Group messages, unless they're from the admin
+        if message.channel.type != discord.ChannelType.text and message.author.id != config["ADMIN"]:
             return
 
         # Don't process messages from blacklisted users
-        if message.author.id in blacklist.BLACKLISTS[str(message.guild.id)]:
+        if message.channel.type == discord.ChannelType.text and message.author.id in blacklist.BLACKLISTS[str(message.guild.id)]:
             return
 
         # If the message is a question to the bot, answer it
@@ -102,10 +106,11 @@ class FuckbotClient(discord.Client):
                     return
 
         # Process message triggers
-        await trigger.trigger(message)
+        if message.channel.type == discord.ChannelType.text:
+            await trigger.trigger(message)
 
         # If the message is candleja-
-        if "candlej" in message.content:
+        if message.channel.type == discord.ChannelType.text and "candlej" in message.content:
             await message.channel.send("https://i.kym-cdn.com/photos/images/original/000/459/677/ca1.jpg")
             return
 

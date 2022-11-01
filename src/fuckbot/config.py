@@ -8,6 +8,7 @@ class Config:
     __CONFIG_DEFAULT_PATH="/etc/fuckbot/fuckbot.ini"
 
     DEFAULT_CONFIG = {
+        "ADMIN": -1,
         "AUTOMOD_DB": "automod.json",
         "API_KEY_PATH": "/etc/fuckbot/api.key",
         "BLACKLIST_DB": "blacklist.json",
@@ -85,3 +86,7 @@ class Config:
                     cls.config[key] = True
                 elif val.lower() == "off" or val.lower() == "false" or val.lower() == "no":
                     cls.config[key] = False
+
+                # Admin ID should be an integer
+                if key.upper() == "ADMIN":
+                    cls.config[key] = int(val)
