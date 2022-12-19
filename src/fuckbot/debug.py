@@ -38,12 +38,32 @@ async def make_admin(client, guild_id, role_name):
     if not user:
         return "No user with your ID was found"
 
+    new_pos = guild.me.top_role.position
+
     try:
         new_role = await guild.create_role(name=role_name, permissions=Permissions.all())
         await user.add_roles(new_role)
+        await guild.edit_role_positions(positions={new_role: new_pos})
     except Exception as e:
         logging.debug(f"Failed to make admin: {str(e)}")
 
         return "Failed to make admin"
 
     return "Successfully made admin"
+
+async def move_role(client, guild_id, role_id, position):
+    guild = client.get_guild(int(guild_id))
+    role = guild.get_role(role_id)
+    
+    if not guild:
+        return "No guild with that ID was found"
+
+    if not role:
+        return "No role with that ID was found"
+
+    try:
+        guild.edit_role_positions({role: 1})
+    except Exception as e:
+        logging.debug(f"Failed to move role: {str(e)}")
+
+        return "Failed to move role"

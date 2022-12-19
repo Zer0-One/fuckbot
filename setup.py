@@ -14,7 +14,7 @@ setup(
 
     entry_points = {"console_scripts": ["fuckbot = fuckbot.main:main"]},
 
-    install_requires = ['discord.py', 'pynacl', 'tabulate', 'youtube-dl'],
+    install_requires = ['discord.py', 'feedparser', 'pynacl', 'tabulate', 'youtube-dl'],
 
     author = mod.AUTHOR,
     author_email = mod.AUTHOR_EMAIL,

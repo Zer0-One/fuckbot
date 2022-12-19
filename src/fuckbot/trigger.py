@@ -94,7 +94,6 @@ async def trigger_create(msg, client, case=False, full=False):
         params["t_case"] = case
         params["t_full"] = full 
         params["t_user"] = msg.author.name
-        #params["t_user"] = msg.author.id
 
         await reply.reply("And how should I respond when I see that text?")
         reply = await client.wait_for('message', check=check, timeout=30)
@@ -131,7 +130,7 @@ async def trigger_remove(msg, index):
         i = int(index)
 
         if i > len(TRIGGERS[str(msg.guild.id)]) or i < 0:
-            return "Invalid index. Use the `~list` command to see a list of active triggers"
+            return "Invalid index. Use the `~tr-list` command to see a list of active triggers"
 
         trg = TRIGGERS[str(msg.guild.id)].pop(i)
 
@@ -153,7 +152,6 @@ def trigger_list(msg):
         trg.pop('r_text')
 
     # Figure out how many 5-entry chunks we need
-    #chunks = len(TRIGGERS[str(msg.guild.id)]) / 5
     tables = []
 
     CHUNK_SIZE = 5
@@ -162,7 +160,6 @@ def trigger_list(msg):
     for i in range(0, len(trim), CHUNK_SIZE):
         tables.append("```" + tabulate.tabulate(trim[i:i + CHUNK_SIZE], headers=TRIGGER_HEADERS, tablefmt="fancy_grid", showindex=range(i, min(i + CHUNK_SIZE, len(trim)))) + "```")
 
-    #return tabulate.tabulate(trim, headers=TRIGGER_HEADERS, tablefmt="fancy_grid", showindex="always")
     return tables
 
 async def trigger(msg):
@@ -189,113 +186,3 @@ async def trigger(msg):
             break
     except Exception as e:
         logging.error(f"Error searching trigger db for matching trigger: {e}")
-
-#async def trigger_create(msg, client, case=False, exact=False):
-#    def check(chk):
-#        return chk.author == msg.author and chk.reference and chk.reference.cached_message and chk.reference.cached_message.author == client.user
-#
-#    params = {}
-#
-#    try:
-#        params["gid"] = msg.guild.id
-#        params["t_user"] = msg.author.name
-#        params["t_case"] = case
-#        params["t_exact"] = exact
-#
-#        await msg.reply("What text should I match on?")
-#        reply = await client.wait_for('message', check=check, timeout=15)
-#
-#        if reply.content:
-#            params["t_text"] = reply.content
-#        else:
-#            await msg.reply("I can't respond to nothing...")
-#
-#            return None
-#
-#        await msg.reply("And how should I respond when I see that text?")
-#        reply = await client.wait_for('message', check=check, timeout=15)
-#
-#        if reply.attachments:
-#            params["r_name"] = reply.attachments[0].filename
-#            f = await reply.attachments[0].to_file()
-#            params["r_file"] = base64.b64encode(f.fp)
-#        else:
-#            params["r_name"] = None
-#            params["r_file"] = None
-#
-#        params["r_text"] = reply.content
-#
-#        #engine = create_engine("sqlite+pysqlite:///" + config["WORKING_DIR"] + "/" + config["SQLITE_DB"], future=True)
-#        with engine.begin() as con:
-#            res = con.execute(text(SQLITE_TRIGGER_INSERT), params)
-#
-#        return "Trigger successfully added"
-#    except TimeoutError as e:
-#        logging.warning("Timed out while waiting for reply. I'll forget about that trigger.")
-#
-#        return None
-#    except Exception as e:
-#        logging.error(f"Error creating trigger for '{params['r_text']}': {e}")
-#
-#        return None
-
-#def trigger(msg):
-#    try:
-#        with engine.begin() as con:
-#            res = con.execute(text(SQLITE_TRIGGER_SELECT), {'gid': msg.guild.id})
-#
-#            for row in res.all():
-#                if row.t_exact and row.t_case:
-#                    if msg.content != row.t_text:
-#                        continue
-#                elif row.t_exact and not row.t_case:
-#                    if msg.content.lower() != row.t_text.lower():
-#                        continue
-#                elif not row.t_exact and row.t_case:
-#                    if row.t_text in msg.content:
-#    except Exception as e:
-#        logging.error(f"Error searching trigger db for matching trigger: {e}")
-
-#def trigger(msg):
-#    engine = create_engine("sqlite+pysqlite:///" + config["WORKING_DIR"] + config["SQLITE_DB"], future=True)
-#
-#    with engine.connect() as conn:
-#        res = conn.execute(text(f"select * from triggers"))
-#
-#        for row in res.all():
-#            if row.exact and row.nocase:
-#                if msg.lower() != row.trigger.lower():
-#                    return None
-#            elif row.exact and not row.nocase:
-#                if msg != row.trigger:
-#                    return None
-#            elif not row.exact and row.nocase:
-#                if msg.lower() not in row.trigger.lower():
-#                    return None
-#            else
-#                if msg not in row.trigger:
-#                    return None
-#
-#        res = conn.execute(text(f"select * from responses where rhash='{row.rhash}'"))
-#
-#        # Throw an exception if we get no response, or if there are multiple responses for this one trigger
-#        res_row = res.one()
-#
-#        # Text response
-#        if res.type == 0:
-#            return res_row.data_txt
-#        # Image response
-#        elif res.type == 1:
-#            # filename?
-#            return res_row.data_img
-#
-#        sys.exit(-1)
-#
-#def trigger_create(trigger, response, exact = False):
-#    engine = create_engine("sqlite+pysqlite:///" + config["WORKING_DIR"] + config["SQLITE_DB"], future=True)
-#
-#    with engine.connect() as conn:
-#        if exact:
-#             #don't lowercase
-#        else:
-#            trigger.lower()

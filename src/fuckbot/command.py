@@ -1,10 +1,10 @@
 import discord
 import logging
-
 import fuckbot.audio as audio
 import fuckbot.automod as automod
 import fuckbot.blacklist as blacklist
 import fuckbot.debug as debug
+import fuckbot.feeds as feeds
 import fuckbot.help as help
 import fuckbot.interject as interject
 import fuckbot.roll as roll
@@ -283,6 +283,21 @@ async def execute(client, msg):
             return (ResponseType.TEXTS, ret)
 
         return (ResponseType.TEXT, "Error encountered while attempting to enumerate triggers")
+
+    if directive == "feed-add":
+        if len(cmdseq) < 3 or len(msg.channel_mentions) != 1:
+            return (ResponseType.TEXT, "You must specify a feed url and a discord channel")
+
+        return (ResponseType.TEXT, feeds.feed_add(msg.guild.id, msg.channel_mentions[0].id, cmdseq[2]))
+
+    if directive == "feed-list":
+        return (ResponseType.TEXT, feeds.feed_list(msg.guild))
+
+    if directive == "feed-del":
+        if len(cmdseq) < 2:
+            return (ResponseType.TEXT, "You must specify a feed index to remove")
+
+        return (ResponseType.TEXT, feeds.feed_del(msg.guild.id, cmdseq[1]))
 
     if directive == "version":
         version_text = f"Fuckbot version: {VERSION}\n"

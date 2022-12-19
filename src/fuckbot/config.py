@@ -13,6 +13,7 @@ class Config:
         "API_KEY_PATH": "/etc/fuckbot/api.key",
         "BLACKLIST_DB": "blacklist.json",
         "DEBUG": False,
+        "FEED_DB": "feed.json",
         "LOGFILE": False,
         "SQLITE_DB": "fuckbot.db",
         "SYSLOG": False,

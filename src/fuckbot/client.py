@@ -3,10 +3,15 @@ import discord
 import logging
 import pprint
 
+from discord.ext import tasks
+
+import feedparser
+
 import fuckbot.audio as audio
 import fuckbot.automod as automod
 import fuckbot.blacklist as blacklist
 import fuckbot.eightball as eightball
+import fuckbot.feeds as feeds
 import fuckbot.trigger as trigger
 import fuckbot.twoweeks as twoweeks
 
@@ -28,8 +33,14 @@ class FuckbotClient(discord.Client):
         # Initialize trigger module
         trigger.trigger_init()
 
+        # Initialize feed module
+        feeds.feed_init()
+
         # Create task to wait on children created by the audio module
         asyncio.create_task(audio.waitpids())
+
+        # Start RSS feed polling loop
+        self.feed_poll.start()
 
     async def on_guild_join(self, guild):
         await self.on_guild_available(guild)
@@ -48,6 +59,11 @@ class FuckbotClient(discord.Client):
         if not str(guild.id) in trigger.TRIGGERS:
             trigger.TRIGGERS[str(guild.id)] = []
             trigger.trigger_save()
+
+        # Initialize feed map, write to disk
+        if not str(guild.id) in feeds.FEEDS:
+            feeds.FEEDS[str(guild.id)] = []
+            feeds.feed_save()
 
         # Initialize automod config, write to disk
         if not str(guild.id) in automod.AUTOMOD_CONF:
@@ -118,3 +134,24 @@ class FuckbotClient(discord.Client):
         # If someone leaves, make sure we rekt em on the way out
         if member.guild.system_channel:
             await member.guild.system_channel.send(rekt(member.display_name))
+
+    @tasks.loop(minutes=15)
+    async def feed_poll(self):
+        for k,v in feeds.FEEDS.items():
+            if len(v) > 0:
+                for feed in v:
+                    f = feedparser.parse(feed['url'])
+
+                    # If the latest entry is new, post it
+                    if f.entries[0].published_parsed > tuple(feed['last_publish']):
+                        chan = self.get_channel(feed['channel'])
+
+                        await chan.send(f.entries[0].link)
+
+                        feed['last_publish'] = f.entries[0].published_parsed
+
+                        feeds.feed_save()
+
+    @feed_poll.before_loop
+    async def before_feed_poll(self):
+        await self.wait_until_ready()
